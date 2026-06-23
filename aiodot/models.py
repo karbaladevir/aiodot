@@ -1,6 +1,3 @@
-
-
-
 from typing import Optional, Dict, List, Any
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -8,7 +5,6 @@ from datetime import datetime
 
 @dataclass
 class User:
-    
     user_id: str = ""
     username: str = ""
     display_name: str = ""
@@ -83,16 +79,13 @@ class User:
             email_verified=data.get("email_verified", False),
             phone_verified=data.get("phone_verified", False),
         )
-    
 
-    
     @property
     def profile_url(self) -> str:
         return f"https://mydot.one/@{self.username}"
 
     @property
     def joined_date_formatted(self) -> str:
-
         if not self.joined_date:
             return ""
         try:
@@ -100,16 +93,6 @@ class User:
             return dt.strftime("%B %Y")
         except (ValueError, TypeError):
             return self.joined_date or ""
-
-    @property
-    def joined_date_persian(self) -> str:
-        try:
-            import jdatetime
-            dt = datetime.fromisoformat(self.joined_date.replace("Z", "+00:00"))
-            jd = jdatetime.datetime.fromgregorian(datetime=dt)
-            return jd.strftime("%B %Y") 
-        except (ImportError, ValueError, TypeError):
-            return self.joined_date_formatted
 
     @property
     def is_kyc_verified(self) -> bool:
@@ -121,16 +104,15 @@ class User:
 
     @property
     def badge_name(self) -> str:
-        if self.selected_badge:
-            return self.selected_badge.get("name", "")
-        return ""
+        return self.selected_badge.get("name", "") if self.selected_badge else ""
 
     @property
     def display_name_or_username(self) -> str:
         return self.display_name or self.username
 
     def __repr__(self) -> str:
-        return f"User(@{self.username}, id={self.user_id})"
+        return f"User(@{self.username})"
+
 
 @dataclass
 class Dot:
@@ -209,23 +191,7 @@ class Dot:
 
 
 @dataclass
-class ThreadView:
-    """Thread view (parent, dot, children)."""
-    above: List[Dot] = field(default_factory=list)
-    dot: Optional[Dot] = None
-    below: Dict = field(default_factory=dict)
-
-    @classmethod
-    def from_dict(cls, data: Dict[str, Any]) -> "ThreadView":
-        return cls(
-            above=[Dot.from_dict(d) for d in data.get("above", [])],
-            dot=Dot.from_dict(data.get("dot", {})),
-            below=data.get("below", {}),
-        )
-
-@dataclass
 class Notification:
-    """MyDot notification."""
     id: str = ""
     type: str = ""
     created_at: str = ""
@@ -248,7 +214,6 @@ class Notification:
 
 @dataclass
 class PaginatedResponse:
-    """Generic paginated response."""
     count: int = 0
     next: Optional[str] = None
     previous: Optional[str] = None
@@ -258,8 +223,8 @@ class PaginatedResponse:
 @dataclass
 class Thread:
     id: str = ""
-    root_dot_id: str = ""          # post  id
-    dots: List[Dict] = field(default_factory=list)  # thread posts
+    root_dot_id: str = ""
+    dots: List[Dict] = field(default_factory=list)
     created_at: str = ""
     updated_at: str = ""
 
@@ -277,7 +242,7 @@ class Thread:
 @dataclass
 class ThreadView:
     thread: Optional[Thread] = None
-    replies: List[Dot] = field(default_factory=list)   
+    replies: List[Dot] = field(default_factory=list)
     all_dots: List[Dot] = field(default_factory=list)
 
     @classmethod
@@ -291,7 +256,7 @@ class ThreadView:
 
 @dataclass
 class ReplyPermission:
-    permission: str = "everyone"  # everyone, following, mentioned, nobody
+    permission: str = "everyone"
     allowed_users: List[str] = field(default_factory=list)
 
     @classmethod
