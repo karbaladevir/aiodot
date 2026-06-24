@@ -1,46 +1,45 @@
 <p align="center">
+  <a href="./README.md">🇺🇸 English</a> |
+  <a href="./README.fa.md">🇮🇷 فارسی</a>
+</p>
+
+<p align="center">
   <img src="https://abrehamrahi.ir/o/public/rNf0ej8l/" alt="aiodot logo" width="200">
 </p>
 
 <h1 align="center">aiodot 🚀</h1>
-<p align="center">
-  <b>Async Python client for MyDot.one social platform</b><br>
-  Build bots, automation, and tools with ease.
-</p>
 
 <p align="center">
-  <a href="https://pypi.org/project/aiodot/">
-    <img src="https://badge.fury.io/py/aiodot.svg" alt="PyPI version">
-  </a>
-  <a href="https://pypi.org/project/aiodot/">
-    <img src="https://img.shields.io/pypi/pyversions/aiodot.svg" alt="Python">
-  </a>
-  <a href="https://github.com/karbaladevir/aiodot/blob/main/LICENSE">
-    <img src="https://img.shields.io/badge/License-MIT-yellow.svg" alt="License: MIT">
-  </a>
+  <b>Async Python client for MyDot</b><br>
+  Build bots, self-clients, automation tools and integrations with ease.
 </p>
 
 ---
 
-**`aiodot`** is an asynchronous Python library for [MyDot.one](https://mydot.one). Built with `aiohttp` — fast, async-first, session-based like aiogram.
+## About
+
+**aiodot** is an asynchronous Python library for **MyDot**, a microblogging social platform similar to X (formerly Twitter).
+
+The library is built on top of **aiohttp** and provides a clean, modern, async-first API for interacting with MyDot. Whether you're building bots, automation tools, analytics systems, or personal self-clients, aiodot makes it simple.
 
 ---
 
-## ✨ Features
+## Features
 
-- ⚡ **Async-first** — Built on aiohttp
-- 🔑 **Login with password** — No token needed
-- 💾 **Session persistence** — Login once, auto-loads next time
-- 🔄 **Auto token refresh** — Handles 401 gracefully
-- 📦 **60+ endpoints** — Full API coverage
-- 🖼️ **Avatar upload** — Built-in support
-- 💰 **Wallet management** — Full wallet API
-- 🧵 **Thread management** — Composer and thread support
-- 🎯 **Type hints** — Full type annotations
+* ⚡ Fully asynchronous architecture
+* 🔑 Login using username and password
+* 💾 Persistent sessions
+* 🔄 Automatic token refresh
+* 📦 60+ supported endpoints
+* 🖼️ Avatar upload support
+* 💰 Wallet API support
+* 🧵 Thread management
+* 🤖 Ideal for bots and self-clients
+* 🎯 Full type hints
 
 ---
 
-## 📦 Installation
+## Installation
 
 ```bash
 pip install aiodot
@@ -48,9 +47,7 @@ pip install aiodot
 
 ---
 
-## 💡 Quick Start
-
-### Login with password:
+## Quick Start
 
 ```python
 import asyncio
@@ -63,106 +60,52 @@ async def main():
         me = await client.get_me()
         print(f"@{me.username}")
 
-        dot = await client.create_dot("Hello aiodot! 🚀")
+        dot = await client.create_dot("Hello MyDot! 🚀")
         print(dot.url)
 
 asyncio.run(main())
 ```
 
-### Or login with token:
+---
 
-```python
-async with MyDotClient(token="your-token", session_file="session.json") as client:
-    me = await client.get_me()
-```
+## Why aiodot?
+
+* Easy to use
+* Async-first design
+* Session management built-in
+* Covers most public MyDot APIs
+* Designed for automation and tooling
 
 ---
 
-## 🤖 Echo Bot
+## Use Cases
 
-```python
-import asyncio
-from aiodot import MyDotClient
-
-async def main():
-    processed = set()
-    async with MyDotClient(session_file="session.json") as c:
-        await c.login("username", "password")
-        print(f"🤖 @{(await c.get_me()).username} started!")
-
-        while True:
-            for n in (await c.get_notifications(10)).get("results", []):
-                if n.get("id") in processed:
-                    continue
-                processed.add(n.get("id"))
-                if n.get("type") == "mention":
-                    d = n.get("dot", {})
-                    if d.get("id"):
-                        await c.reply(d["id"], "Hello! 🤖")
-            await asyncio.sleep(15)
-
-asyncio.run(main())
-```
+* 🤖 MyDot bots
+* 👤 Self-clients
+* 📊 Analytics tools
+* 📰 Scheduled posting
+* 🔔 Notification monitoring
+* 🧪 Experiments and integrations
 
 ---
 
-## 📖 Complete API Reference
+## Community
 
-| Category | Methods |
-|----------|---------|
-| **Auth** | `login()`, `login_with_token()` |
-| **Profile** | `get_me()`, `update_profile()`, `upload_avatar()`, `upload_avatar_request()`, `upload_avatar_put()`, `get_profile_visibility()`, `set_profile_visibility()` |
-| **Dots** | `create_dot()`, `get_dot()`, `reply()`, `repost()`, `quote()`, `like()`, `unlike()`, `bookmark()`, `unbookmark()`, `edit_dot()`, `delete_dot()`, `get_replies()`, `get_reposts()`, `get_quotes()`, `get_dot_likes()`, `undo_repost()`, `set_reply_permission()` |
-| **Social** | `follow()`, `unfollow()`, `block()`, `unblock()`, `mute()`, `unmute()` |
-| **Users** | `search_users()`, `get_user_followers()`, `get_user_following()`, `get_user_dots()`, `get_user_replies()`, `get_user_likes()` |
-| **Feed** | `home_feed()`, `following_feed()`, `explore_users_suggestions()`, `get_topic_dots()` |
-| **Notifications** | `get_notifications()`, `mark_all_read()`, `get_notification_preferences()`, `update_notification_preferences()` |
-| **Trending** | `get_trending_hashtags()`, `get_trending_media()` |
-| **Bookmarks** | `get_bookmarks()` |
-| **Wallet** | `client.wallet.create()`, `client.wallet.list()`, `client.wallet.get()`, `client.wallet.transactions()`, `client.wallet.toggle_default()` |
-| **Threads** | `get_threads()`, `create_threads()`, `get_threads_view()`, `add_thread()`, `remove_thread()` |
-| **Composer** | `get_composer_state()`, `reset_composer()` |
-| **Media** | `upload_media()` |
-| **Other** | `get_alerts()`, `get_invites()`, `get_wallets()`, `get_2fa_state()`, `get_star_settings()`, `get_star_transactions()` |
+* Telegram: @aiodotlib
+* Bale: ble.ir/aiodot
+* Documentation: aiodot Docs
+* Website: karbaladev.ir
 
 ---
 
-## 📈 What's New
+## Disclaimer
 
-### v1.2.0
-- 🔑 **Password login** — `client.login(username, password)`
-- 🖼️ **Avatar upload** — Full upload flow (`upload_avatar`, `upload_avatar_request`, `upload_avatar_put`)
-- 💰 **Wallet management** — `client.wallet.*` (create, list, get, transactions, toggle default)
-- 🧵 **Thread management** — Composer and thread endpoints
-- 👤 **Extended User model** — 25+ fields including badges, KYC, join date, visibility
-- 📦 **New models** — `Thread`, `ReplyPermission`
-- 🔗 **Extended profile update** — `selected_badge_id`, `avatar_key`, `birthdate`
-- 📝 **Improved auth** — Cleaner code, session persistence
+This is an unofficial library and is not affiliated with the MyDot team.
 
-### v1.0.0
-- ⚡ Initial release
-- 50+ endpoints (dots, feed, notifications, trending, social, search)
-- Session persistence (like aiogram)
-- Auto token refresh
-- Type hints & dataclasses
+Use responsibly and in accordance with MyDot's Terms of Service.
 
 ---
 
-## ⚠️ Disclaimer
+## License
 
-Unofficial library. Use responsibly per MyDot.one Terms of Service.
-
----
-
-## 📡 Community
-
-- 📢 **Telegram:** [@aiodotlib](https://t.me/aiodotlib)
-- 💬 **Bale:** [ble.ir/aiodot](https://ble.ir/aiodot)
-- 📖 **Documentation:** [aiodot docs](https://samon-fs.github.io/aiodot-docsweb/)
-- 🌐 **Website:** [karbaladev.ir](https://karbaladev.ir)
-
----
-
-## 📄 License
-
-MIT © [karbaladev.ir](https://karbaladev.ir) — [View License](https://github.com/karbaladevir/aiodot/blob/main/LICENSE)
+MIT License
